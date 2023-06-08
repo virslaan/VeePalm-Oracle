@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Palm Oracle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+    }
+    #palmImage {
+      max-width: 90%;
+    }
+    #scanButton, #fortune {
+      margin-top: 20px;
+      padding: 10px;
+      border: none;
+      background-color: #3f51b5;
+      color: #fff;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #fortune {
+      display: none;
+    }
+    #scanButton:hover {
+      background-color: #303f9f;
+    }
+    video {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Palm Oracle</h1>
+  <video id="video" autoplay></video>
+  <button id="snap">Snap Photo</button>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <button id="scanButton">Scan Palm</button>
+  <div id="fortune"></div>
+
+  <script>
+    // Set up camera
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const snap = document.getElementById('snap');
+    const errorMsgElement = document.querySelector('span#errorMsg');
+    const constraints = {
+      video: {
+        width: 1280, height: 720
+      }
+    };
+
+    async function init() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        handleSuccess(stream);
+      } catch (e) {
+        errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+      }
+    }
+
+    function handleSuccess(stream) {
+      window.stream = stream;
+      video.srcObject = stream;
+    }
+
+    init();
+
+    var context = canvas.getContext('2d');
+    snap.addEventListener("click", function() {
+      context.drawImage(video, 0, 0, 640, 480);
+    });
+
+   var fortunes = [
+  'The lines on your palm speak of an impending adventure. Pack your bags, the journey awaits.',
+  'You carry the mark of an old soul. Wisdom is your ally, seek it in your decisions.',
+  'Your energy radiates positivity. Expect joy and good vibes in your near future.',
+  'A great mystery in your life is about to be revealed. Remain open-minded and curious.',
+  'Strong leadership qualities are engraved on your palm. Seize the reins when the opportunity arises.',
+  'An unexpected encounter will soon change your path. Keep your heart open to new connections.',
+  'Your palm lines indicate a profound spiritual awakening. Time to delve deeper into your inner self.',
+  'The universe whispers of a financial breakthrough. Be ready to seize the opportunity.',
+  'A challenge lies ahead. But don\'t worry, your palm suggests you\'re more than capable.',
+  'You\'re on the verge of a significant personal growth spurt. Embrace the change.',
+  'Your lifeline suggests longevity and good health. Cherish and maintain your well-being.',
+  'A deep romantic connection is on the horizon. Keep your heart ready for the flutter.',
+  'You\'re about to embark on a journey of self-discovery. Embrace the revelations.',
+  'Creative energy bursts from your palm lines. Unleash your artistic potential.',
+  'Your fate line foretells an influential role in the community. Step up, your people need you.',
+  'A deep-seated desire will soon be within reach. Prepare for your dreams to come true.',
+  'Your intuition is your greatest strength, as seen in your palm. Trust your gut feelings.',
+  'A balance between work and personal life is suggested by your palm. Strive for harmony.',
+  'Your palm lines reveal a tendency for peace and tranquillity. Seek places and people that echo this.',
+  'A talent hidden deep within you is about to surface. Get ready to shine.'
+];
+
+    document.getElementById('scanButton').onclick = function() {
+      document.getElementById('scanButton').innerText = 'Scanning...';
+      setTimeout(function() {
+        document.getElementById('scanButton').innerText = 'Scan Again';
+        var fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+        document.getElementById('fortune').innerText = fortune;
+        document.getElementById('fortune').style.display = 'block';
+      }, 3000);
+    };
+  </script>
+</body>
+</html>
